@@ -52,6 +52,7 @@ const RegisterNew = () => {
  firebase.auth().createUserWithEmailAndPassword(email, password)
  .then(() => {
    console.log("Registro exitoso");
+   M.toast({html: 'Registro Exitoso!'});
  })
  .catch(error => {
    const errorCode = error.code;
@@ -140,7 +141,7 @@ const addMessage = () => {
     });*/
    });   
  };
-
+ 
  document.addEventListener('DOMContentLoaded', readyAdd);
 
 
@@ -195,7 +196,7 @@ const addMessage = () => {
   // Increment post likes by 1.
   const countLike = (keyMessage) => {
     let editBtnLike = document.getElementById("btnLike"+ keyMessage);
-    let counterRef = firebase.database().ref('mensajes/like');
+    let counterRef = firebase.database().ref('mensajes/' + keymessage +'/like');
     counterRef.transaction(function(currentLike) {
     // If mensajes/like has never been set, currentlike will be `null`.
     return currentLike + 1;
