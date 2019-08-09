@@ -25,7 +25,6 @@ button:hover {
   padding: 10px 18px;
   background-color: #f44336;
 }
-
 /* Center the avatar image inside this container */
 .imgcontainer {
   text-align: center;
@@ -94,6 +93,16 @@ h1 {
   border-radius: 40px;
   margin-right: 50px;
   width: 20%;
+}
+
+.like{
+  background-image: url(/src/img/like.png);
+  background-size: 10%;
+  background-repeat: no-repeat;
+  border-radius: 40px;
+  margin-right: 30px;
+  width: 20%;
+ border-image-width: auto;
 }
 
 #comentarios{

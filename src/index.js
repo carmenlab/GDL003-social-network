@@ -76,9 +76,13 @@ const logoutUser = () => {
 //Detectar si ya esta Logeado
 firebase.auth().onAuthStateChanged(user =>{
   if (user){
-    console.log("Has iniciado sesion " + user.email);
-    console.log("Has iniciado sesion");
+    let emailLogin = user.email;
+    let uid = user.uid;
+    console.log("Has iniciado sesion email:" + emailLogin);
+    console.log("Has iniciado sesion uid:" + uid);
     
+    //txtEmail.style.display = "none";
+    //txtPassword.style.display = "none";
     btnLogin.style.display = "none";
     btnRegister.style.display = "none";
   } else {
@@ -104,8 +108,9 @@ const addMessage = () => {
       console.log("Empty Fields");
     }else{
       let messageBD = db.ref('mensajes').push({
-      mensaje : newMessage
-     })
+      mensaje : newMessage,
+      like : 0
+     });
      key = messageBD.key;
      document.getElementById("comentarios").value= '';
     };
@@ -118,6 +123,7 @@ const addMessage = () => {
    db.ref('mensajes').on('child_added', function(data){
     console.log(data.val());
     let messageKey = data.key;
+    //let day = new Date.now();
     let date = Date();
     console.log("La clave del mensaje es "+ messageKey);
     document.getElementById("chat").innerHTML += 
@@ -125,16 +131,18 @@ const addMessage = () => {
        `<p> ${date}
           <input type="text" class="text" id="text${data.key}" value="${data.val().mensaje}" disabled>
           <button id="btnEdit${data.key}" onclick="editMessage('${messageKey}')" class="boton">Editar</button>
-          <button class="boton" onClick="deleteMessage('${data.key}')">Eliminar</button>
-        </p>`;
+          <button class="boton" onclick="deleteMessage('${data.key}')">Eliminar</button>
+          <button id="btnLike${data.key}" class="like" onclick="countLike('${messageKey}')">Like</button>
+        </p>
+        </br>`;
     /*document.getElementById("btnEdit").addEventListener("click", function(){
       editMessage(messageKey);
     });*/
-   });
-   
+   });   
  };
 
  document.addEventListener('DOMContentLoaded', readyAdd);
+
 
   //Eliminar mensaje en Firebase
   const deleteMessage = (keyMessage) => {
@@ -149,7 +157,8 @@ const addMessage = () => {
     db.ref('mensajes/' + messageKey).on('child_removed', function(data){
      console.log(data.val() + " Ha eliminado comentario");
     });
-   }; 
+   };
+   
 
   //Editar mensaje en Firebase
  const editMessage = (keyMessage) => {
@@ -176,8 +185,21 @@ const addMessage = () => {
  };
 
  //Eliminar Datos en Pantalla HTML
-  /* const readyEdit = () => {
-    db.ref('mensajes/' + messageKey).on('child_update', function(data){
+ const readyEdit = () => {
+    db.ref('mensajes/' + messageKey).on('child_changed', function(data){
      console.log(data.val() + " Ha editado la clave" + messageKey);
+     location.reload();
     });
-   };*/
+   };
+
+  // Increment post likes by 1.
+  const countLike = (keyMessage) => {
+    let editBtnLike = document.getElementById("btnLike"+ keyMessage);
+    let counterRef = firebase.database().ref('mensajes/like');
+    counterRef.transaction(function(currentLike) {
+    // If mensajes/like has never been set, currentlike will be `null`.
+    return currentLike + 1;
+    })
+    editBtnLike.innerHTML = ( counterRef+' Like');
+    console.log("Boton like funciona" + keyMessage);
+  }
