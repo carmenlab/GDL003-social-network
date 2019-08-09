@@ -196,11 +196,13 @@ const addMessage = () => {
   // Increment post likes by 1.
   const countLike = (keyMessage) => {
     let editBtnLike = document.getElementById("btnLike"+ keyMessage);
-    let counterRef = firebase.database().ref('mensajes/' + keymessage +'/like');
-    counterRef.transaction(function(currentLike) {
-    // If mensajes/like has never been set, currentlike will be `null`.
+    //let counterRef = firebase.database().ref('mensajes/' + keymessage +'/like');
+    let counter = 0;
+    let totalCounter = counter + 1;
+    /*counterRef.transaction(function(currentLike) {
+    If mensajes/like has never been set, currentlike will be `null`.
     return currentLike + 1;
-    })
-    editBtnLike.innerHTML = ( counterRef+' Like');
+    })*/
+    editBtnLike.innerHTML = (totalCounter + ' Like');
     console.log("Boton like funciona" + keyMessage);
   }
